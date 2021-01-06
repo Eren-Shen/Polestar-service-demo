@@ -17,7 +17,7 @@ showActivity(
 )
 ```
 
-1. 监听广播用于自启动：
+2. 监听广播用于自启动：
 
 ```
 Intent.ACTION_SCREEN_OFF
@@ -25,4 +25,4 @@ Intent.ACTION_SCREEN_ON
 Intent.ACTION_BOOT_COMPLETED
 ```
 
-2. LocalService 后台长期运行，每隔十秒获取一次当前位置信息并打印log
+3. LocalService 后台长期运行，每隔十秒获取一次当前位置信息并打印log
