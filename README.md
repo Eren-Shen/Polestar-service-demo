@@ -10,7 +10,7 @@ if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
     }
 }
 
-//申请自启动权限，目前只适配了小米，可以达到保活的
+//申请自启动权限，目前只适配了小米，可以达到保活效果
 showActivity(
     "com.miui.securitycenter",
     "com.miui.permcenter.autostart.AutoStartManagementActivity"
