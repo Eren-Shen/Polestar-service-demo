@@ -5,16 +5,20 @@ import android.app.Application
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
+import com.gyf.cactus.Cactus
 import com.gyf.cactus.callback.CactusCallback
 import com.gyf.cactus.ext.cactus
+import com.gyf.cactus.service.CactusJobService
+import com.polestar.cn.mylibrary.Leoric
+import com.polestar.cn.mylibrary.LeoricConfigs
 import com.polestar.cn.service.sample.Save
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.internal.disposables.DisposableHelper.dispose
 import io.reactivex.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
@@ -60,12 +64,16 @@ class App : Application(), CactusCallback {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }, PendingIntent.FLAG_UPDATE_CURRENT)
         //可选，注册广播监听器
-//        registerReceiver(MainReceiver(), IntentFilter().apply {
-//            addAction(Cactus.CACTUS_WORK)
-//            addAction(Cactus.CACTUS_STOP)
-//            addAction(Cactus.CACTUS_BACKGROUND)
-//            addAction(Cactus.CACTUS_FOREGROUND)
-//        })
+        registerReceiver(MainReceiver(), IntentFilter().apply {
+            addAction(Cactus.CACTUS_WORK)
+            addAction(Cactus.CACTUS_STOP)
+            addAction(Cactus.CACTUS_BACKGROUND)
+            addAction(Cactus.CACTUS_FOREGROUND)
+            addAction(Intent.ACTION_BOOT_COMPLETED)
+            addAction(Intent.ACTION_REBOOT)
+            addAction(Intent.ACTION_SCREEN_OFF)
+            addAction(Intent.ACTION_SCREEN_ON)
+        })
 
         cactus {
             //可选，设置通知栏点击事件
@@ -87,6 +95,29 @@ class App : Application(), CactusCallback {
 //        registerActivityLifecycleCallbacks(AppBackgroundCallback {
 //
 //        })
+
+
+
+    }
+
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+//        Leoric.init(
+//            base, LeoricConfigs(
+//                LeoricConfigs.LeoricConfig(
+//                    "$packageName:resident",
+//                    CactusJobService::class.java.canonicalName,
+//                    MainReceiver::class.java.canonicalName,
+//                    MainActivity::class.java.canonicalName
+//                ),
+//                LeoricConfigs.LeoricConfig(
+//                    "android.media",
+//                    Service2::class.java.getCanonicalName(),
+//                    Receiver2::class.java.getCanonicalName(),
+//                    Activity2::class.java.getCanonicalName()
+//                )
+//            )
+//        )
     }
 
     @SuppressLint("CheckResult")

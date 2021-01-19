@@ -1,2 +1,3 @@
+include ':mylibrary'
 include ':cactus-sample', ':cactus'
 rootProject.name='Cactus'

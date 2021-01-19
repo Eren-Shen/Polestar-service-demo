@@ -1,24 +1,17 @@
 package com.gyf.cactus.sample
 
-import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.os.PowerManager
 import android.provider.Settings
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
-import com.gyf.cactus.Cactus
-import com.gyf.cactus.ext.cactusRestart
 import com.gyf.cactus.ext.cactusUnregister
-import com.gyf.cactus.ext.cactusUpdateNotification
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -31,15 +24,15 @@ class MainActivity : BaseActivity() {
     private var times = 0L
 
     private val list = listOf(
-        Pair("今日头条", "抖音全世界通用"),
-        Pair("微博", "赵丽颖吐槽中餐厅"),
-        Pair("绿洲", "今天又是美好的一天"),
-        Pair("QQ", "好友申请"),
-        Pair("微信", "在吗？"),
-        Pair("百度地图", "新的路径规划"),
-        Pair("墨迹天气", "明日大风，注意出行"),
-        Pair("信息", "1条文本信息"),
-        Pair("手机天猫", "你关注的宝贝降价啦")
+            Pair("今日头条", "抖音全世界通用"),
+            Pair("微博", "赵丽颖吐槽中餐厅"),
+            Pair("绿洲", "今天又是美好的一天"),
+            Pair("QQ", "好友申请"),
+            Pair("微信", "在吗？"),
+            Pair("百度地图", "新的路径规划"),
+            Pair("墨迹天气", "明日大风，注意出行"),
+            Pair("信息", "1条文本信息"),
+            Pair("手机天猫", "你关注的宝贝降价啦")
     )
 
     companion object {
@@ -131,10 +124,13 @@ class MainActivity : BaseActivity() {
 
         //申请自启动权限
         btnCrash.setOnClickListener {
-            showActivity(
-                "com.miui.securitycenter",
-                "com.miui.permcenter.autostart.AutoStartManagementActivity"
-            )
+//            showActivity(
+//                    "com.miui.securitycenter",
+//                    "com.miui.permcenter.autostart.AutoStartManagementActivity"
+//            )
+
+            val intent = getAutostartSettingIntent(this)
+            startActivity(intent)
         }
     }
 
@@ -153,5 +149,41 @@ class MainActivity : BaseActivity() {
 //                ).show()
 //            }
         }
+    }
+
+    /**
+     * 获取自启动管理页面的Intent
+     * @param context context
+     * @return 返回自启动管理页面的Intent
+     */
+    fun getAutostartSettingIntent(context: Context): Intent? {
+        var componentName: ComponentName? = null
+        val brand = Build.MANUFACTURER
+        val intent = Intent()
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        when (brand.toLowerCase()) {
+            "samsung" -> componentName = ComponentName("com.samsung.android.sm", "com.samsung.android.sm.app.dashboard.SmartManagerDashBoardActivity")
+            "huawei" ->             //荣耀V8，EMUI 8.0.0，Android 8.0上，以下两者效果一样
+                componentName = ComponentName("com.huawei.systemmanager", "com.huawei.systemmanager.appcontrol.activity.StartupAppControlActivity")
+            "xiaomi" -> componentName = ComponentName("com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity")
+            "vivo" -> //            componentName = new ComponentName("com.iqoo.secure", "com.iqoo.secure.safaguard.PurviewTabActivity");
+                componentName = ComponentName("com.iqoo.secure", "com.iqoo.secure.ui.phoneoptimize.AddWhiteListActivity")
+            "oppo" -> //            componentName = new ComponentName("com.oppo.safe", "com.oppo.safe.permission.startup.StartupAppListActivity");
+                componentName = ComponentName("com.coloros.oppoguardelf", "com.coloros.powermanager.fuelgaue.PowerUsageModelActivity")
+            "yulong", "360" -> componentName = ComponentName("com.yulong.android.coolsafe", "com.yulong.android.coolsafe.ui.activity.autorun.AutoRunListActivity")
+            "meizu" -> componentName = ComponentName("com.meizu.safe", "com.meizu.safe.permission.SmartBGActivity")
+            "oneplus" -> componentName = ComponentName("com.oneplus.security", "com.oneplus.security.chainlaunch.view.ChainLaunchAppListActivity")
+            "letv" -> {
+                intent.action = "com.letv.android.permissionautoboot"
+                intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
+                intent.data = Uri.fromParts("package", context.packageName, null)
+            }
+            else -> {
+                intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
+                intent.data = Uri.fromParts("package", context.packageName, null)
+            }
+        }
+        intent.component = componentName
+        return intent
     }
 }

@@ -283,6 +283,7 @@ class LocalService : Service(), IBinder.DeathRecipient {
                             pauseMusic()
                         }
                     }
+
                     Cactus.CACTUS_BACKGROUND -> {
                         log("background")
                         if (mCactusConfig.defaultConfig.backgroundMusicEnabled) {

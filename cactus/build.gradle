@@ -29,6 +29,9 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     implementation "com.amap.api:location:5.1.0"
+    implementation project(path: ':mylibrary')
+
+
 }
 
 publish {
